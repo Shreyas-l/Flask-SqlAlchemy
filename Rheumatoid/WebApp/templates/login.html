@@ -1,0 +1,55 @@
+
+{% extends 'base.html' %}
+
+
+{% block title %} Data Masking  {% endblock %}
+
+{% block body %} 
+
+	<div class="row">
+		<div class="col-md-6">
+		<div class="log_left">
+			<img class="img-responsive" src="{{url_for('static',filename='images/suth_logo.png')}}" alt=""/><br>
+
+			{% for category, message in get_flashed_messages(with_categories=True) %}
+		  		<div class="alert alert-danger alert-dismissable" role="alert">
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+                        <span aria-hidden="true">x</span>
+
+                    </button>
+
+                {{message}}
+
+                </div>
+			{% endfor %}
+
+			<div class="log_box">
+			<form action="{{url_for('login')}}" method="POST">
+		  <label for="email">User Email</label><br>
+		  <input type="text" id="email" name="username" value=""><br>
+		  <label for="pass">Password</label><br>
+		  <input type="password" id="pass" name="password" namevalue="">
+			<button class="sign_btn" type="submit">Sign In</button>
+				<label>
+        <!-- <input type="checkbox" checked="checked" name="remember"> Remember me -->
+					 <!-- <span class="pwd"><a href="#"  data-toggle="modal" class="s_up"  data-target="#myModal">Forgot Password?</a></span> -->
+      </label>
+				<!-- <label><span class="fl_r"><a class="s_up" href="/register">Sign Up</a></span></label> -->
+		</form>
+
+			</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+		<div class="log_right"></div>
+		</div>
+
+
+				
+		    </div>
+	</div>
+	 
+{% endblock %}
+ 

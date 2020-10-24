@@ -15,7 +15,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <p>{{name}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt="" /></span></p>
+                        <p>{{g.user.username}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt="" /></span></p>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/logout">Logout</a>
@@ -54,7 +54,7 @@
 <div class="wrapper_r">
     <div class="row">
         <div class="col-md-6">
-            <h1>{{g.user.username}}</h1>
+            <h1>Patients</h1>
         </div>
         <div class="col-md-6">
             <a href="#">

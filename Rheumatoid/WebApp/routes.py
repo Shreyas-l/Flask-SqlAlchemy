@@ -46,9 +46,13 @@ users.append(User(id=3, username='Carlos', password='somethingsimple', user_type
 def before_request():
     g.user = False
 
-    if 'user_id' in session:
-        user = [x for x in users if x.id == session['user_id']][0]
-        g.user = user
+    try:
+        if 'user_id' in session:
+            user = [x for x in users if x.id == session['user_id']][0]
+            g.user = user
+    except:
+        flash("User Not Found!")
+        return render_template('login.html')
 
 
 
@@ -69,11 +73,20 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        user = [x for x in users if x.username == username][0]
-        if user and user.password == password:
-            session['user_id'] = user.id
-            session['user_type'] = user.type
-            return redirect(url_for('dashboard'))
+        try:
+            user = [x for x in users if x.username == username][0]
+            if user and user.password == password:
+                session['user_id'] = user.id
+                session['user_type'] = user.type
+                return redirect(url_for('managepatients'))
+            else:
+                flash("Incorrect Password!")
+                return render_template('login.html')
+
+        except:
+            flash("User Not Found!")
+            return render_template('login.html')
+
 
         return redirect(url_for('login'))
 
@@ -89,15 +102,15 @@ def logout():
 
 
 # Manage Services WebPage
-@app.route('/dashboard')
-def dashboard():
+@app.route('/managepatients')
+def managepatients():
 
     if not g.user:
         return redirect(url_for('login'))
 
     all_data = Data.query.all()
 
-    return render_template("manageservices.html", services = all_data, name = 'John', stype=1,utype=1)
+    return render_template("managepatients.html", services = all_data, stype=1,utype=1)
 
 
 #this route is for inserting data to mysql database via html forms
