@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Data Masking  {% endblock %}
+
+
+{% block body %} 
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        
+        <form action="/manageservices" method="POST">
+        <div align="center" class="modal-body">
+         <h3>Service Started successfully</h3>
+			<div align="center">
+			<button type="submit" class="ok_btn" data-dismiss="modal">Ok</button>
+        </div>
+        
+      </div>
+      </form>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

@@ -9,13 +9,42 @@
 
 {% block body %}
 
+<link rel="stylesheet" href="static/css/jquery.dataTables.1.10.21.min.css">
+<script src="static/js/jquery.dataTables.1.10.21.min.js"></script>
+
+<script>
+        $(document).ready(function () {
+
+            var oTable = $('.serviceDT').DataTable({
+                searching: true,
+                stateSave: true,
+                lengthChange: false,
+                 /* Disable initial sort */
+                "aaSorting": []
+            });
+
+            $(".servicename").on("keyup change", function () {
+                oTable.search($(this).val()).draw();
+            })
+        });
+</script>
+
 <div class="container">
+  <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <form action="/search1" method="POST">
+                <input type="text" class="form-control servicename" placeholder="Search..." name="sname">
+            </form>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col md-12">
 
             <div class="jumbotron p-3">
 
-                <h2>Manage <b>Employees </b>  <button type="button"  class="btn btn-success float-right"
+                <h2>Manage <b>Patients </b>  <button type="button"  class="btn btn-success float-right"
                 data-toggle="modal" data-target="#mymodal">Add New Employees</button> </h2>
 
 
@@ -46,7 +75,7 @@
                 {% endwith %}
 
 
-                <table class="table table-hover table-dark">
+                <table class="table table-hover table-light serviceDT">
 
                     <tr>
 

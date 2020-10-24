@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Data Masking  {% endblock %}
+
+
+{% block body %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/jquery.dataTables.1.10.21.min.css')}}">
+<script src="{{url_for('static',filename='js/jquery.dataTables.1.10.21.min.js')}}"></script>
+
+<div class="header">
+    <a href="#default" class="logo"><img src="{{url_for('static',filename='images/top_logo.png')}}" alt="" /></a>
+    <div class="header-right">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <p>{{name}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt="" /></span></p>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <img src="{{url_for('static',filename='images/home.png')}}" alt="" /> <a class="nav-link" href="/manageservices"> Home</a>
+            </li>
+            <li class="nav-item">
+                <img src="{{url_for('static',filename='images/settings.png')}}" alt="" /> <a class="nav-link" href="/settings">Settings</a>
+            </li>
+            <li class="nav-item">
+                <img src="{{url_for('static',filename='images/help.png')}}" alt="" />  <a class="nav-link" href="/help">Help</a>
+            </li>
+
+        </ul>
+    </div>
+</nav>
+
+<div class="sidebar">
+    <ul class="side_l">
+        <li><a class="active" href="/viewservices">View All Services</a></li>
+        <li><a href="/filtertypes">Filter Types</a></li>
+        <li><a href="/logs">Reports</a></li>
+    </ul>
+</div>
+
+<div class="wrapper_r">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>{{g.user.username}}</h1>
+        </div>
+        <div class="col-md-6">
+            <a href="#">
+                <button class="wrap_btn" data-toggle="modal" data-target="#mymodal">Add New Patient</button>
+            </a>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".servicename").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $(".service-result tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $('.serviceDT').DataTable({
+                searching: false,
+                lengthChange: false
+
+            });
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <form action="/search1" method="POST">
+                <input type="text" class="form-control servicename" placeholder="Search..." name="sname">
+                <!--<div class="input-group">
+                    <input type="text" class="form-control servicename" placeholder="Service Name" name="sname">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <img src="{{url_for('static',filename='images/search.png')}}" alt="" />
+                        </button>
+                    </div>
+                </div>-->
+            </form>
+        </div>
+    </div>
+    <div class="row tab_box p_20">
+        <table class="table table-bordered serviceDT">
+            <thead>
+                <tr>
+                    <th style="width:10%;">Service Id</th>
+                    <th style="width:20%;">Service Name</th>
+                    <th style="width:20%;">Email</th>
+                    <th style="width:20%;">Phone</th>
+                    <th style="width:20%;">Action</th>
+                </tr>
+            </thead>
+            <tbody class="service-result">
+
+                {% for row in services %}
+
+                <tr>
+
+                    <td>{{row.id}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{row.email}}</td>
+                    <td>{{row.phone}}</td>
+                    <td>
+                            <a href="/update/{{row.id}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.id}}">Edit</a>
+                            <a href="/delete/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        </td>
+                </tr>
+
+                                <!-- Modal Edit Employee-->
+                <div id="modaledit{{row.id}}" class="modal fade" role="dialog" data-backdrop="false">
+                   <div class="modal-dialog">
+
+
+                      <div class="modal-content">
+
+
+                         <div class="modal-header">
+
+
+                            <h4 class="modal-title">Update Information</h4>
+
+
+                         </div>
+
+
+                         <div class="modal-body">
+
+
+                            <form action="{{url_for('update')}}" method="POST">
+
+
+                               <div class="form-group">
+
+
+                                  <label>Name:</label>
+                                   <input type="hidden"  name="id" value="{{row.id}}">
+
+                                  <input type="text" class="form-control" name="name" value="{{row.name}}">
+
+
+                               </div>
+
+
+
+                               <div class="form-group">
+
+
+                                  <label>Email:</label>
+
+                                  <input type="text" class="form-control" name="email" value="{{row.email}}">
+
+
+                               </div>
+
+
+                               <div class="form-group">
+
+
+                                  <label>Phone:</label>
+
+                                  <input type="text" class="form-control" name="phone" value="{{row.phone}}">
+
+
+                               </div>
+
+
+                               <div class="form-group">
+
+
+                                  <button class="btn btn-primary" type="submit">Update</button>
+
+
+                               </div>
+
+
+                            </form>
+
+
+                         </div>
+
+
+                         <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+
+                         </div>
+
+
+                      </div>
+
+
+                   </div>
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+
+        <!-- Modal Add Employee-->
+
+
+    <div id="mymodal" class="modal fade" role="dialog" data-backdrop="false">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+
+                <h4 class="modal-title">Add Employee</h4>
+             </div>
+             <div class="modal-body">
+
+                <form action="{{url_for('insert')}}" method="POST">
+
+
+                   <div class="form-group">
+
+                      <label>Name:</label>
+                      <input type="text" class="form-control" name="name" required="1">
+
+
+                   </div>
+
+
+                    <div class="form-group">
+
+
+                      <label>Email:</label>
+                      <input type="email" class="form-control" name="email" required="1">
+
+
+                   </div>
+
+
+                    <div class="form-group">
+
+
+                      <label>Phone:</label>
+                      <input type="number" class="form-control" name="phone" required="1">
+
+
+                   </div>
+
+
+
+                   <div class="form-group">
+
+
+                      <button class="btn btn-primary" type="submit">Add Employee</button>
+
+
+                   </div>
+
+
+                </form>
+
+
+             </div>
+
+
+             <div class="modal-footer">
+
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+
+             </div>
+
+
+          </div>
+
+
+       </div>
+
+
+    </div>
+
+
+    {% endblock %}

@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Data Masking {% endblock %}
+
+{% block nav %}
+<div class = "jumbotron p-3">
+<nav class="nav nav-pills nav-justified">
+  
+  <a class="nav-item nav-link " href="/manageservices">HOME</a>
+  <a class="nav-item nav-link " href="/step1" >STEP 1</a>
+  <a class="nav-item nav-link active" href="/step2">STEP 2</a>
+  <a class="nav-item nav-link " href="/step3">STEP 3</a>
+</nav>
+</div>
+{% endblock %}
+
+{% block body %} 
+
+<div class="container" >
+	<div class="row">
+		<div class="col md-12">
+			<div class="jumbotron p-3">
+				<h2><b> FILTERS </b>  </h2>
+
+
+				<table class="table table-hover table-dark ">
+					
+					<tr>
+						<th>Name</th>
+						<th>Area</th>
+						<th>Prefix</th>
+						<th>Suffix</th>
+						<th>Mask</th>
+						<th>Action</th>
+					</tr>
+
+					{% if filters %}
+					{% for filter in filters %}
+
+					<tr>
+						<td>{{filter[2]}}</td>
+						<td>{{filter[3]}}</td>
+						<td>{{filter[4]}}</td>
+						<td>{{filter[5]}}</td>
+						<td>{{filter[6]}}</td>
+						<td>
+							<a href="/selfilter/{{filter[0]}}" class="btn btn-warning btn-xs">Select</a>
+							
+						</td>
+						
+					</tr>
+											
+								{% endfor %}
+								{% endif %}
+				</table>
+			</div>
+
+			<div class="jumbotron p-3">
+				<h2><b> SELECTED FILTERS </b>  </h2>
+
+
+				<table class="table table-hover table-dark ">
+					
+					<tr>
+						<th>Name</th>
+						<th>Area</th>
+						<th>Prefix</th>
+						<th>Suffix</th>
+						<th>Mask</th>
+						<th>Action</th>
+					</tr>
+
+					{% if selfils %}
+					{% for filter in selfils %}
+
+					<tr>
+						<td>{{filter[2]}}</td>
+						<td>{{filter[3]}}</td>
+						<td>{{filter[4]}}</td>
+						<td>{{filter[5]}}</td>
+						<td>{{filter[6]}}</td>
+						<td>
+							<a href="" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{filter[0]}}">Edit</a>
+							<a href="/deleteselfil/{{filter[0]}}" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to Delete?')">Delete</a>
+							
+						</td>
+						
+					</tr>
+																 <!-- Modal Edit Employee-->
+												<div id="modaledit{{filter[0]}}" class="modal fade" role="dialog">
+												   <div class="modal-dialog">
+												 
+												 
+												      <div class="modal-content">
+												 
+												 
+												         <div class="modal-header">
+												 
+												 
+												            <h4 class="modal-title">Update Filter Config</h4>
+												 
+												 
+												         </div>
+												 
+												 
+												         <div class="modal-body">
+												 
+												 
+												            <form action="{{url_for('updatefil')}}" method="POST">
+												 
+												 
+												               <div class="form-group">
+												 
+												 
+												                  <label>Name:</label>
+												                   <input type="hidden"  name="fid" value="{{filter[0]}}">
+												 
+												                  <input type="text" class="form-control" name="name" value="{{filter[2]}}">
+												 
+												 
+												               </div>
+												 
+												 
+												 
+												               <div class="form-group">
+												 
+												 
+												                  <label>Area:</label>
+												 
+												                  <input type="text" class="form-control" name="area" value="{{filter[3]}}">
+												 
+												 
+												               </div>
+												 
+												 
+												               <div class="form-group">
+												 
+													                  <div class="form-group">
+
+													 			   		<label>Prefix:</label>
+													 			   		<input type="text" type="text" class="form-control custom-select" name="prefix" value="{{filter[4]}}" list="prefixes"/>
+																			<datalist id="prefixes">
+
+																			  {% for prefix in prefixes %}
+
+																			  <option>{{prefix}}</option>
+
+																			  {% endfor %}
+
+																			</datalist>
+
+										                		   		</div>
+												 
+
+												               </div>
+
+												                <div class="form-group">
+												 
+												 
+												                  <label>Suffix:</label>
+													 			   		<input type="text" type="text" class="form-control custom-select" name="suffix" value="{{filter[5]}}" list="suffixes"/>
+																			<datalist id="suffixes">
+
+																			  {% for suffix in suffixes %}
+
+																			  <option>{{suffix}}</option>
+
+																			  {% endfor %}
+
+																			</datalist>
+
+										                		</div>
+												 
+												 
+
+												                <div class="form-group">
+												 
+												 
+												                  <label>Mask:</label>
+												 
+												                  <input type="text" class="form-control" name="mask" value="{{filter[6]}}" disabled>
+												                  <input type="hidden" class="form-control" name="mask" value="{{filter[6]}}">
+												 
+												 
+												               </div>
+												 
+												 
+												               <div class="form-group">
+												 
+												 
+												                  <button class="btn btn-primary" type="submit">Update</button>
+												 
+												 
+												               </div>
+												 
+												 
+												            </form>
+												 
+												 
+												         </div>
+												 
+												 
+												         <div class="modal-footer">
+												 
+												 
+												            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+												 
+												 
+												         </div>
+												 
+												 
+												      </div>
+												 
+												 
+												   </div>
+												 
+												</div>
+
+								{% endfor %}
+								{% endif %}
+				</table>
+			</div>
+
+			<a href = '/step3'><button type="button" class="btn btn-success float-right"> STEP 3 </button></a>
+
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

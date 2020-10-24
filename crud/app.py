@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, g, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -15,6 +15,67 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:shreyasfcrit@23.2
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+
+
+class User:
+    def __init__(self, id, username, password, user_type):
+        self.id = id
+        self.username = username
+        self.password = password
+        self.type = user_type
+
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
+users = []
+users.append(User(id=1, username='Anthony', password='password', user_type='Doctor'))
+users.append(User(id=2, username='Becca', password='secret', user_type='Nurse'))
+users.append(User(id=3, username='Carlos', password='somethingsimple', user_type='Receptionist'))
+
+
+@app.before_request
+def before_request():
+    g.user = False
+
+    if 'user_id' in session:
+        user = [x for x in users if x.id == session['user_id']][0]
+        g.user = user
+        
+
+# Default Route
+@app.route('/')
+def index():
+    return render_template('login.html')
+
+    
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session.pop('user_id', None)
+
+        username = request.form['username']
+        password = request.form['password']
+        
+        user = [x for x in users if x.username == username][0]
+        if user and user.password == password:
+            session['user_id'] = user.id
+            session['user_type'] = user.type
+            return redirect(url_for('dashboard'))
+
+        return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+@app.route('/profile')
+def profile():
+    if not g.user:
+        return redirect(url_for('login'))
+
+    return render_template('profile.html')
+
+
+
 
 
 #Creating model table for our CRUD database
@@ -37,17 +98,24 @@ class Data(db.Model):
 
 #This is the index route where we are going to
 #query on all our employee data
-@app.route('/')
-def Index():
+@app.route('/dashboard')
+def dashboard():
+
+    if not g.user:
+        return redirect(url_for('login'))
+
     all_data = Data.query.all()
 
-    return render_template("index.html", employees = all_data)
+    return render_template("dashboard.html", employees = all_data)
 
 
 
 #this route is for inserting data to mysql database via html forms
 @app.route('/insert', methods = ['POST'])
 def insert():
+
+    if not g.user:
+        return redirect(url_for('login'))
 
     if request.method == 'POST':
 
@@ -62,12 +130,15 @@ def insert():
 
         flash("Employee Inserted Successfully")
 
-        return redirect(url_for('Index'))
+        return redirect(url_for('dashboard'))
 
 
 #this is our update route where we are going to update our employee
 @app.route('/update', methods = ['GET', 'POST'])
 def update():
+
+    if not g.user:
+        return redirect(url_for('login'))
 
     if request.method == 'POST':
         my_data = Data.query.get(request.form.get('id'))
@@ -79,7 +150,7 @@ def update():
         db.session.commit()
         flash("Employee Updated Successfully")
 
-        return redirect(url_for('Index'))
+        return redirect(url_for('dashboard'))
 
 
 
@@ -92,7 +163,7 @@ def delete(id):
     db.session.commit()
     flash("Employee Deleted Successfully")
 
-    return redirect(url_for('Index'))
+    return redirect(url_for('dashboard'))
 
 
 

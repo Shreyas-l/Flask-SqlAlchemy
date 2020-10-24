@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Sentinel Unmasking</title>
+<link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+<!-- Bootstrap-Core-CSS -->
+<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+<!-- Bootstrap-Core-CSS -->
+</head>
+
+<body>
+	
+	<div class="header"> <a href="#default" class="logo"><img src="{{url_for('static',filename='images/top_logo.png')}}" alt=""/></a>
+  <div class="header-right">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <p>John Smith<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt=""/></span></p>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Logout</a> </li>
+      </ul>
+    </div>
+  </div>
+</div>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item ">
+       <img src="{{url_for('static',filename='images/home.png')}}" alt=""/> <a class="nav-link" href="home.html"> Home</a>
+      </li>
+      <li class="nav-item active">
+         <img src="{{url_for('static',filename='images/settings.png')}}" alt=""/> <a class="nav-link" href="#">Settings</a>
+      </li>
+      <li class="nav-item">
+        <img src="{{url_for('static',filename='images/help.png')}}" alt=""/>  <a class="nav-link" href="help.html">Help</a>
+      </li>
+      
+    </ul>
+  </div>
+</nav>
+	
+		<div class="sidebar">
+		<ul class="side_l">
+			<li><a href="#">Add New Service</a></li>
+			<li><a href="#">View Services</a></li>
+			<li><a href="#">Filter Types</a></li>
+			<li><a href="#">Reports</a></li>
+			</ul>
+		</div>
+	
+		<div class="wrapper_r">
+			<div class="row">
+				<div class="col-md-6">
+		<h1>Settings</h1>	
+					</div>
+				<div class="col-md-6">
+					<a href="addnew.html">
+<!--			<button class="wrap_btn">Add New Service</button>-->
+						</a>
+					</div>
+			</div>
+<!--
+			<div class="row">
+			<div class="col-md-8"></div>
+			<div class="col-md-4">
+				<form>
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Search">
+    <div class="input-group-btn">
+      <button class="btn btn-default" type="submit">
+        <img src="images/search.png" alt=""/>
+      </button>
+    </div>
+  </div>
+</form>		
+				</div>				
+			</div>
+-->
+			<div class="row tab_box p_20">
+			<table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>User ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email ID</th>
+        <th>User Role</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>01-07-2020</td>
+        <td>1</td>
+        <td>Karthik</td>
+        <td>K</td>
+        <td>Karthik@smartleap.com</td>
+        <td>6</td>
+        <td>
+		  <a href="#"><img src="{{url_for('static',filename='images/edit.png')}}" alt=""/></a>
+<!--		  <a href="#"><img src="images/play.png" alt=""/></a>-->
+		  <a href="#"><img src="{{url_for('static',filename='images/delete.png')}}" alt=""/></a>
+		  </td>
+      </tr>
+     
+    </tbody>
+  </table>
+			</div>
+
+
+<script src="{{url_for('static',filename='js/jquery.min.js')}}"></script> 
+			
+<script src="{{url_for('static',filename='js/bootstrap.js')}}"></script>
+</body>
+</html>
