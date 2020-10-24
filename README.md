@@ -1,1 +1,1 @@
-# Flask-SqlAlechmy
+# Flask-SqlAlchemy
