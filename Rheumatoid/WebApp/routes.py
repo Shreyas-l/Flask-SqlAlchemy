@@ -131,9 +131,9 @@ def insert():
         db.session.add(my_data)
         db.session.commit()
 
-        flash("Employee Inserted Successfully")
+        flash("Patient Inserted Successfully")
 
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('managepatients'))
 
 
 #this is our update route where we are going to update our employee
@@ -151,9 +151,9 @@ def update():
         my_data.phone = request.form['phone']
 
         db.session.commit()
-        flash("Employee Updated Successfully")
+        flash("Patient Updated Successfully")
 
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('managepatients'))
 
 
 
@@ -164,9 +164,9 @@ def delete(id):
     my_data = Data.query.get(id)
     db.session.delete(my_data)
     db.session.commit()
-    flash("Employee Deleted Successfully")
+    flash("Patient Deleted Successfully")
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('managepatients'))
 
 
 @app.route('/viewservices')

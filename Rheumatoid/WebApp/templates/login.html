@@ -6,10 +6,10 @@
 
 {% block body %} 
 
-	<div class="row">
+	<div class="row" style="margin-top:70px;">
 		<div class="col-md-6">
 		<div class="log_left">
-			<img class="img-responsive" src="{{url_for('static',filename='images/suth_logo.png')}}" alt=""/><br>
+			<img class="img-responsive" src="{{url_for('static',filename='images/rheumat_logo.png')}}" alt=""/><br>
 
 			{% for category, message in get_flashed_messages(with_categories=True) %}
 		  		<div class="alert alert-danger alert-dismissable" role="alert">
@@ -31,7 +31,7 @@
 		  <input type="text" id="email" name="username" value=""><br>
 		  <label for="pass">Password</label><br>
 		  <input type="password" id="pass" name="password" namevalue="">
-			<button class="sign_btn" type="submit">Sign In</button>
+			<button class="sign_btn" type="submit">Log In</button>
 				<label>
         <!-- <input type="checkbox" checked="checked" name="remember"> Remember me -->
 					 <!-- <span class="pwd"><a href="#"  data-toggle="modal" class="s_up"  data-target="#myModal">Forgot Password?</a></span> -->
