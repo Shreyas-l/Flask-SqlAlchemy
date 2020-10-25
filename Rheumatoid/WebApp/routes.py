@@ -1,6 +1,9 @@
 from WebApp import app
-from flask import render_template,request,redirect,url_for,flash,session,jsonify,g,session
+from flask import render_template,request,redirect,url_for,flash,session,jsonify,g,session,make_response,send_file
 from flask_sqlalchemy import SQLAlchemy
+import pdfkit
+from reportlab.pdfgen import canvas
+import os
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -169,89 +172,153 @@ def delete(id):
     return redirect(url_for('managepatients'))
 
 
-@app.route('/viewservices')
-def viewservices():
-		
-	try:
-		if not 'uid' in session:
-			return redirect('/')
+#This route is for treating a patient
+@app.route('/treatment/<id>/', methods = ['GET', 'POST'])
+def treatment(id):
+    my_data = Data.query.get(id)
+    # db.session.delete(my_data)
+    # db.session.commit()
+    # flash("Patient Deleted Successfully")
 
-		cur = con.cursor()
-
-		uid = session['uid']
-		utype = session['utype']
-		name = session['name']
-
-		if utype == 1:
-			cur.execute("SELECT * FROM services ORDER BY servicename ASC")
-
-		else:
-			cur.execute("SELECT sid FROM userservices WHERE uid = %s ",(uid,))
-			try:
-				sids = cur.fetchall()[0]
-			except:
-				sids = (1,) # Service ID 1 is Reserved
-			cur.execute("SELECT * FROM services WHERE serviceid IN %s ORDER BY status ASC",(sids,))
-
-		allData = cur.fetchall()
-		l = []
-		for data in allData:
-			if data[2] == 'active':
-				d = 'Stop'
-				isedit = 'disabled'
-			else:
-				d = 'Start'
-				isedit = ' '
-			l.append([data[0],data[1],data[2],d,isedit])
-		
-		stype = 'All Services'
-		
-		return render_template('manageservices.html',services = l,name = name,stype=stype, utype = utype)
-
-	except Exception as e:
-		con.rollback()
-		cur.close()
-
-		return redirect('/')
+    return render_template('treatment.html')
 
 
+#This route is for New Appointment
+@app.route('/newappointment/<id>/', methods = ['GET', 'POST'])
+def newappointment(id):
+    my_data = Data.query.get(id)
+    # db.session.delete(my_data)
+    # db.session.commit()
+    # flash("Patient Deleted Successfully")
+
+    return render_template('newappointment.html')
 
 
-@app.route('/search1',methods=["GET","POST"])
-def search1():
-	try:	
-		if not 'uid' in session:
-				return redirect('/')
+#This route is for Prescription
+@app.route('/prescription/<id>/', methods = ['GET', 'POST'])
+def prescription(id):
+    my_data = Data.query.get(id)
+    # db.session.delete(my_data)
+    # db.session.commit()
+    # flash("Patient Deleted Successfully")
 
-		if request.method=="POST":
+    return render_template('prescription.html')
 
-			cur = con.cursor()
 
-			sname = request.form['sname']
+#This route is for Download
+@app.route('/download/<id>/', methods = ['GET', 'POST'])
+def download(id):
 
-			cur.execute("SELECT * FROM services WHERE servicename = %s",(sname,))
+    # rendered = url_for('pdfgen')
 
-			allData = cur.fetchall()
-			l = []
-			for data in allData:
-				if data[2] == 'active':
-					d = 'Stop'
-					isedit = 'disabled'
-				else:
-					d = 'Start'
-					isedit = ' '
-				l.append([data[0],data[1],data[2],d,isedit])
-			
-			stype="Selected Service"
+    from PyPDF2 import PdfFileWriter, PdfFileReader
+    import io
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
 
-			name = session['name']
-			return render_template('manageservices.html',services = l,name = name,stype=stype)
+    packet = io.BytesIO()
+    # create a new PDF with Reportlab
+    can = canvas.Canvas(packet, pagesize=letter)
+    can.drawString(10, 100, "Hello World")
+    can.save()
 
-	except Exception as e:
-		con.rollback()
-		cur.close()
+    #move to the beginning of the StringIO buffer
+    packet.seek(0)
+    new_pdf = PdfFileReader(packet)
+    # read your existing PDF
+    existing_pdf = PdfFileReader(open("WebApp/static/pdf/samplePrescription.pdf", "rb"))
+    output = PdfFileWriter()
+    # add the "watermark" (which is the new pdf) on the existing page
+    page = existing_pdf.getPage(0)
+    page.mergePage(new_pdf.getPage(0))
+    output.addPage(page)
+    # finally, write "output" to a real file
+    outputStream = open("WebApp/static/pdf/prescription.pdf", "wb")
+    output.write(outputStream)
+    outputStream.close()
 
-		return redirect('/')
+    # pdf = pdfkit.from_string(rendered, False)
+
+    # response = make_response(pdf)
+    # response.headers['Content-type'] = 'application/pdf'
+    # response.headers['Content-Disposition'] = 'inline; filename=prescription.pdf'
+
+    return render_template('download.html', prescription=1)
+
+
+@app.route('/downloadPDF')
+def downloadPDF():
+	return send_file("static/pdf/prescription.pdf",
+	                     attachment_filename='patient.pdf',
+	                     as_attachment=True)
+#This route is for Download
+# @app.route('/pdfgen', methods = ['GET', 'POST'])
+# def pdfgen():
+    
+#     rendered = render_template('prescriptionPDF.html')
+#     pdf = pdfkit.from_string(rendered, False)
+
+#     response = make_response(pdf)
+#     response.headers['Content-type'] = 'application/pdf'
+#     response.headers['Content-Disposition'] = 'inline; filename=prescription.pdf'
+
+#     return response
+
+
+@app.route('/pdfdownload', methods = ['GET', 'POST'])
+def pdfdownload():
+    
+    rendered = render_template('prescriptionPDF.html')
+    pdf = pdfkit.from_string(rendered, False)
+
+    response = make_response(pdf)
+    response.headers['Content-type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=prescription.pdf'
+
+    return response
+
+
+@app.route('/test')
+def test():
+
+    from PyPDF2 import PdfFileWriter, PdfFileReader
+    import io
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import letter
+
+    packet = io.BytesIO()
+    # create a new PDF with Reportlab
+    can = canvas.Canvas(packet, pagesize=letter)
+    can.drawString(10, 100, "Hello There")
+    can.save()
+
+    #move to the beginning of the StringIO buffer
+    packet.seek(0)
+    new_pdf = PdfFileReader(packet)
+    # read your existing PDF
+    existing_pdf = PdfFileReader(open("WebApp/static/pdf/samplePrescription.pdf", "rb"))
+    output = PdfFileWriter()
+    # add the "watermark" (which is the new pdf) on the existing page
+    page = existing_pdf.getPage(0)
+    page.mergePage(new_pdf.getPage(0))
+    output.addPage(page)
+    # finally, write "output" to a real file
+    outputStream = open("WebApp/static/pdf/prescription.pdf", "wb")
+    output.write(outputStream)
+    outputStream.close()
+
+    return send_file("static/pdf/prescription.pdf",
+	                     attachment_filename='output.pdf',
+	                     as_attachment=True)
+
+	#return render_template('prescriptionPDF.html')
+
+@app.route('/savepatienttreatment/<id>/', methods = ['GET', 'POST'])
+def savepatienttreatment(id):
+    
+    os.remove("WebApp/static/pdf/prescription.pdf")
+
+    return redirect(url_for('managepatients'))
 
 
 
@@ -284,42 +351,6 @@ def sess(seid):
 		return redirect('/')
 
 
-
-#Delete a given Service
-@app.route('/delservice/<seid>')
-def delservice(seid):
-		
-	try:
-		if not 'uid' in session:
-			return redirect('/')
-
-		cur = con.cursor()
-		cur.execute("DELETE FROM userservices WHERE sid = %s",(seid,))
-		con.commit()
-		cur.execute("DELETE FROM services WHERE serviceid = %s",(seid,))
-		con.commit()
-		cur.execute("DELETE FROM servicedetails WHERE sid = %s",(seid,))
-		con.commit()
-		cur.execute("SELECT filterid FROM fsets WHERE fsetid = %s",(seid,))
-		fs = cur.fetchall()
-		for fid in fs:
-			cur.execute("DELETE FROM filters WHERE fid = %s",(fid[0],))
-			con.commit()
-		cur.execute("DELETE FROM fsets WHERE fsetid = %s",(seid,))
-		con.commit()
-		cur.execute("DELETE FROM logs WHERE logid = %s",(seid,))
-		con.commit()
-		cur.close()
-
-		red.activeServices()
-
-		return redirect(url_for('manageservices'))
-
-	except Exception as e:
-		con.rollback()
-		cur.close()
-
-		return redirect('/')
 
 
 

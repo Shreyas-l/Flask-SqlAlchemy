@@ -7,52 +7,27 @@
 {% block body %} 
 <link rel="stylesheet" href="{{url_for('static',filename='css/steps.css')}}">
 
+<link rel="stylesheet" href="{{url_for('static',filename='css/jquery.dataTables.1.10.21.min.css')}}">
+<script src="{{url_for('static',filename='js/jquery.dataTables.1.10.21.min.js')}}"></script>
 
-<script type="text/javascript">
-
-$(document).ready(function(){
-  var suff = {{suffixes|safe}} // suffix data
-  var options = ''
-  $("input[name='prefix']").on("change", function(){
-      var dataVal = $(this).attr("data-id"); // Get Id value, use this to identify correct siffix element to set options
-
-      if($(this).val().indexOf("\\") == 0){ // if start with '\', then its Advance static masking
-        $(suff).each(function(key, value){//iterate through suffix values
-          if(value.indexOf("A") == 0){ 
-             options += '<option>'+ value + '</option>';
-          }
-        })
-      }else{ // or else its NLP masking
-        $(suff).each(function(key, value){
-          if(value.indexOf("N") == 0){
-             options += '<option>'+ value + '</option>';
-          }
-        })
-      }
-      $(".cSuffixes" + dataVal).val(""); // clear datalist related input element
-      $(".suffixes" + dataVal).html("") // clear datalist
-      $(".suffixes" + dataVal).html(options); // add new option
-      options = "";
-      //document.getElementById('anrede').innerHTML = options;
-  });
-  
-})
-
-</script>
-
-<div class="header"> <a href="#default" class="logo"><img src="{{url_for('static',filename='images/top_logo.png')}}" alt=""/></a>
-  <div class="header-right">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <p>{{name}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt=""/></span></p>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/logout">Logout</a> </li>
-      </ul>
+<div class="header">
+    <a href="#default" class="logo"><img src="{{url_for('static',filename='images/top_r3_logo.png')}}" alt="" /></a>
+    <div class="header-right">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <p>{{g.user.username}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt="" /></span></p>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </div>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
@@ -76,22 +51,23 @@ $(document).ready(function(){
       <h1>{{sname}}</h1>
     </div>
   </div>
+ 
   <div class="wizard">
     <div class="wizard-inner">
       <div class="connecting-line"></div>
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"> <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Step 1"> <span class="round-tab">
-          <p>Service Name</p>
+          <p>Patient Details</p>
           </span> </a> </li>
         <li role="presentation" class="active"> <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2"> <span class="round-tab">
           <div class="round-tab"></div>
-          <p>URL Prefix</p>
+          <p>New Appointment</p>
           </span> </a> </li>
-        <li role="presentation" class="active"> <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> <span class="round-tab">
-          <p>Masking</p>
+        <li role="presentation" class="disabled"> <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> <span class="round-tab">
+          <p>Prescription</p>
           </span> </a> </li>
         <li role="presentation" class="disabled"> <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Step 4"> <span class="round-tab">
-          <p>Unmaksing</p>
+          <p>Download</p>
           </span> </a> </li>
       </ul>
     </div>
@@ -325,8 +301,8 @@ $(document).ready(function(){
   </table><br><br><br><br>
       </div>
 		  	<div class="footer">	
-				<a href="/step1"><button class="prev_btn" type="button">Previous</button></a>
-				<a href="/step3"><button class="next_btn" type="button">Next</button></a>
+				<a href="/treatment/{{g.user.id}}"><button class="prev_btn" type="button">Patient Details</button></a>
+				<a href="/prescription/{{g.user.id}}"><button class="next_btn" type="button">Prescription</button></a>
 	</div>
 	  </div>
 	

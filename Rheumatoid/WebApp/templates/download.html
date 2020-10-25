@@ -7,19 +7,27 @@
 {% block body %} 
 <link rel="stylesheet" href="{{url_for('static',filename='css/steps.css')}}">
 
-<div class="header"> <a href="#default" class="logo"><img src="{{url_for('static',filename='images/top_logo.png')}}" alt=""/></a>
-  <div class="header-right">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <p>{{name}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt=""/></span></p>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/logout">Logout</a> </li>
-      </ul>
+<link rel="stylesheet" href="{{url_for('static',filename='css/jquery.dataTables.1.10.21.min.css')}}">
+<script src="{{url_for('static',filename='js/jquery.dataTables.1.10.21.min.js')}}"></script>
+
+<div class="header">
+    <a href="#default" class="logo"><img src="{{url_for('static',filename='images/top_r3_logo.png')}}" alt="" /></a>
+    <div class="header-right">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <p>{{g.user.username}}<span> &nbsp;<img src="{{url_for('static',filename='images/user.png')}}" alt="" /></span></p>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </div>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
@@ -43,31 +51,44 @@
       <h1>{{sname}}</h1>
     </div>
   </div>
+  
   <div class="wizard">
     <div class="wizard-inner">
       <div class="connecting-line"></div>
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"> <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Step 1"> <span class="round-tab">
-          <p>Service Name</p>
+          <p>Patient Details</p>
           </span> </a> </li>
         <li role="presentation" class="active"> <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2"> <span class="round-tab">
           <div class="round-tab"></div>
-          <p>URL Prefix</p>
+          <p>New Appointment</p>
           </span> </a> </li>
         <li role="presentation" class="active"> <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3"> <span class="round-tab">
-          <p>Masking</p>
+          <p>Prescription</p>
           </span> </a> </li>
         <li role="presentation" class="active"> <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Step 4"> <span class="round-tab">
-          <p>Unmaksing</p>
+          <p>Download</p>
           </span> </a> </li>
       </ul>
     </div>
   </div>
 
-  <form action="/saveservice" method="POST">
+  <!-- <form action="#" method="POST"> -->
   <div class="tab_bg">
     <div class="row"> 
       <div class="row tab_box">
+
+        <a href="/downloadPDF" download><button class="s_btn" type="button">Download Prescription</button></a><br><br>
+
+        {% if prescription %}
+
+        <!-- <embed type="text/html" src="{{prescription}}" width="100%" height="500"> -->
+        <iframe src="{{url_for('static',filename='pdf/prescription.pdf')}}" height="500" width="100%"></iframe>
+
+        {% endif %}
+        
+
+
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -106,8 +127,8 @@
         </table>
       </div>
       <div class="footer">
-		  <a href="/step2"><button class="prev_btn" type="button">Previous</button></a>
-      <button type="button" class="next_btn" data-toggle="modal" data-target="#myModal">Save Service</button>
+		  <a href="/prescription/{{g.user.id}}"><button class="prev_btn" type="button">Prescription</button></a>
+      <button type="button" class="next_btn" data-toggle="modal" data-target="#myModal">Save Treatment</button>
       </div>
     </div>
   </div>
@@ -120,16 +141,16 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div align="center" class="modal-body">
-         <h3>Service Saved Successfully</h3>
+         <h3>Patient Treatment Details Saved Successfully</h3>
       <div align="center">
-      <button type="submit" class="s_btn">Ok</button>
+      <a href="/savepatienttreatment/{{g.user.id}}"><button type="submit" class="s_btn">Ok</button></a>
       </div>
         
       </div>
     </div>
   </div>
 </div>
-</form>
-</div>
+<!-- </form>
+ --></div>
 
 {% endblock %}
