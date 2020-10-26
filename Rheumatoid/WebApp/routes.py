@@ -4,6 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 import pdfkit
 from reportlab.pdfgen import canvas
 import os
+from PyPDF2 import PdfFileWriter, PdfFileReader
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -187,6 +191,7 @@ def treatment(id):
 @app.route('/newappointment/<id>/', methods = ['GET', 'POST'])
 def newappointment(id):
     my_data = Data.query.get(id)
+
     # db.session.delete(my_data)
     # db.session.commit()
     # flash("Patient Deleted Successfully")
@@ -197,7 +202,20 @@ def newappointment(id):
 #This route is for Prescription
 @app.route('/prescription/<id>/', methods = ['GET', 'POST'])
 def prescription(id):
-    my_data = Data.query.get(id)
+    
+    if request.method=="POST":
+
+            my_data = Data.query.get(id)
+			# uid = session['uid']
+			# sname = request.form['sname']
+			
+			
+            return render_template('prescription.html')
+    else:
+			#session['sid'] = str(sid)
+            # sname = session['sname']
+            return render_template('prescription.html')
+    
     # db.session.delete(my_data)
     # db.session.commit()
     # flash("Patient Deleted Successfully")
@@ -206,36 +224,33 @@ def prescription(id):
 
 
 #This route is for Download
-@app.route('/download/<id>/', methods = ['GET', 'POST'])
-def download(id):
+@app.route('/download', methods = ['GET', 'POST'])
+def download():
 
     # rendered = url_for('pdfgen')
-
-    from PyPDF2 import PdfFileWriter, PdfFileReader
-    import io
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
-
-    packet = io.BytesIO()
+    if request.method=="POST":
+        medicine = request.form['medicine']
+        # my_data = Data.query.get(id)
+        packet = io.BytesIO()
     # create a new PDF with Reportlab
-    can = canvas.Canvas(packet, pagesize=letter)
-    can.drawString(10, 100, "Hello World")
-    can.save()
+        can = canvas.Canvas(packet, pagesize=letter)
+        can.drawString(10, 100, medicine)
+        can.save()
 
     #move to the beginning of the StringIO buffer
-    packet.seek(0)
-    new_pdf = PdfFileReader(packet)
+        packet.seek(0)
+        new_pdf = PdfFileReader(packet)
     # read your existing PDF
-    existing_pdf = PdfFileReader(open("WebApp/static/pdf/samplePrescription.pdf", "rb"))
-    output = PdfFileWriter()
+        existing_pdf = PdfFileReader(open("WebApp/static/pdf/samplePrescription.pdf", "rb"))
+        output = PdfFileWriter()
     # add the "watermark" (which is the new pdf) on the existing page
-    page = existing_pdf.getPage(0)
-    page.mergePage(new_pdf.getPage(0))
-    output.addPage(page)
+        page = existing_pdf.getPage(0)
+        page.mergePage(new_pdf.getPage(0))
+        output.addPage(page)
     # finally, write "output" to a real file
-    outputStream = open("WebApp/static/pdf/prescription.pdf", "wb")
-    output.write(outputStream)
-    outputStream.close()
+        outputStream = open("WebApp/static/pdf/prescription.pdf", "wb")
+        output.write(outputStream)
+        outputStream.close()
 
     # pdf = pdfkit.from_string(rendered, False)
 

@@ -31,7 +31,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active"> <img src="{{url_for('static',filename='images/home.png')}}" alt=""/> <a class="nav-link" href="/manageservices"> Home</a> </li>
+      <li class="nav-item active"> <img src="{{url_for('static',filename='images/home.png')}}" alt=""/> <a class="nav-link" href="/managepatients"> Home</a> </li>
       <li class="nav-item"> <img src="{{url_for('static',filename='images/settings.png')}}" alt=""/> <a class="nav-link" href="/settings">Settings</a> </li>
       <li class="nav-item"> <img src="{{url_for('static',filename='images/help.png')}}" alt=""/> <a class="nav-link" href="/help">Help</a> </li>
     </ul>
@@ -73,12 +73,15 @@
     </div>
   </div>
 
-  <form action="/saveservice" method="POST">
+  <form action="/download" method="POST">
   <div class="tab_bg">
     <div class="row"> 
       <div class="row tab_box">
+        <label for="urlprefix">Medicine</label><br>
+          <input type="text" id="medicine" name="medicine" placeholder="Paracetamol" required>
+          <button type="submit" class="btn float-right" style="color:white;background-color:#ed1651;"> Submit </button> 
         <table class="table table-bordered">
-          <thead>
+          <!-- <thead>
             <tr>
               <th>F ID</th>
               <th>Name</th>
@@ -88,7 +91,7 @@
               <th>Mask</th>
               <th>Unmask</th>
             </tr>
-          </thead>
+          </thead> -->
           <tbody>
             {% if selfils %}
           {% for filter in selfils %}
