@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Data Masking {% endblock %}
+
+{% block nav %}
+<div class = "jumbotron p-3">
+<nav class="nav nav-pills nav-justified">
+  
+  <a class="nav-item nav-link " href="/manageservices">HOME</a>
+  <a class="nav-item nav-link active" href="/step1" >STEP 1</a>
+  <a class="nav-item nav-link " href="/step2">STEP 2</a>
+  <a class="nav-item nav-link " href="/step3">STEP 3</a>
+</nav>
+</div>
+{% endblock %}
+
+
+{% block body %} 
+
+<div class="container" >
+	<div class="row">
+		<div class="col md-12">
+			<div class="jumbotron p-3">
+				<h2><b> URL PATTERNS </b>  <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#mymodal"> Add New URL Prefix </button>  </h2>
+
+
+				<table class="table table-hover table-dark ">
+					
+					<tr>
+						<th>URL Prefix</th>
+						<th>Actions</th>
+					</tr>
+
+					{% if urls %}
+					{% for row in urls %}
+
+					<tr>
+						<td>{{row[2]}}</td>
+						<td>
+							<a href="" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row[1]}}">Edit</a>
+							<a href="/deleterow/{{row[2]}}" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure to Delete?')">Delete</a>
+						</td>
+						
+					</tr>
+								<!-- Modal Edit Employee-->
+												<div id="modaledit{{row[1]}}" class="modal fade" role="dialog">
+												   <div class="modal-dialog">
+												 
+												 
+												      <div class="modal-content">
+												 
+												 
+												         <div class="modal-header">
+												 
+												 
+												            <h4 class="modal-title">Update Information</h4>
+												 
+												 
+												         </div>
+												 
+												 
+												         <div class="modal-body">
+												 
+												 
+												            <form action="{{url_for('urledit')}}" method="POST">
+												 
+												 
+												               <div class="form-group">
+												 
+												 
+												                  <label>URL Prefix:</label>
+												                   <input type="hidden"  name="urlid" value="{{row[1]}}">
+												 
+												                  <input type="text" class="form-control" name="urlpre" value="{{row[2]}}">
+												 
+												 
+												               </div>
+												 				<div class="form-group">
+												 
+												 
+												                  <button class="btn btn-primary" type="submit">Update</button>
+												 
+												 
+												               </div>
+												 
+												 
+												            </form>
+												 
+												 
+												         </div>
+												 
+												 
+												         <div class="modal-footer">
+												 
+												 
+												            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+												 
+												 
+												         </div>
+												 
+												 
+												      </div>
+												 
+												 
+												   </div>
+												 
+												</div>				
+								{% endfor %}
+								{% endif %}
+				</table>
+			</div>
+
+			<!-- Modal Add URL Prefix-->
+ 
+ 
+			<div id="mymodal" class="modal fade" role="dialog">
+			   <div class="modal-dialog">
+			      <div class="modal-content">
+			         <div class="modal-header">
+			 
+			            <h4 class="modal-title">Add URL Prefix</h4>
+			         </div>
+			         <div class="modal-body">
+			 
+			            <form action="/addurl" method="POST">
+			 
+			 
+			               <div class="form-group">
+			 
+			                  <label>URL Prefix:</label>
+			                   <input type="hidden"  name="sname" value="{{sname}}">
+			                  <input type="text" class="form-control" name="urlprefix" required="1">
+			 
+			 
+			               </div>
+			 
+			               <div class="form-group">
+			 
+			 
+			                  <button class="btn btn-primary" type="submit">Add URL Prefix</button>
+			 
+			 
+			               </div>
+			 
+			 
+			            </form>
+			 
+			 
+			         </div>
+			 
+			 
+			         <div class="modal-footer">
+			 
+			 
+			            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			 
+			 
+			         </div>
+			 
+			 
+			      </div>
+			 
+			 
+			   </div>
+			 
+			 
+			</div>
+
+			<a href = '/step2'><button type="button" class="btn btn-success float-right"> STEP 2 </button></a>
+
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

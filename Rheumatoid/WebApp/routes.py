@@ -1,19 +1,21 @@
 from WebApp import app
 from flask import render_template,request,redirect,url_for,flash,session,jsonify,g,session,make_response,send_file
 from flask_sqlalchemy import SQLAlchemy
-import pdfkit
-from reportlab.pdfgen import canvas
-import os
-from PyPDF2 import PdfFileWriter, PdfFileReader
+import base64
+# import pdfkit
+# from reportlab.pdfgen import canvas
+# import os
+# from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+# from reportlab.pdfgen import canvas
+# from reportlab.lib.pagesizes import letter
+from PIL import Image
+import pickle
 import pymysql
 pymysql.install_as_MySQLdb()
 
 
 db = SQLAlchemy(app)
-
 
 
 class User:
@@ -224,73 +226,61 @@ def prescription(id):
 
 
 #This route is for Download
+@app.route('/downloadPDF', methods = ['GET', 'POST'])
+def downloadPDF():
+
+        #medicine = request.form['medicine']
+        # my_data = Data.query.get(id)
+        img = Image.open("WebApp/static/images/prescription.png")
+	#img = Image.open("/Users/shreyas_rl/Desktop/git/Flask-SqlAlchemy/Rheumatoid/WebApp/static/images/prescription.png")
+
+        img_p = pickle.dumps(img)
+
+
+
+        image_p = pickle.loads(img_p)
+
+        print(image_p)
+
+        img_byte_arr = io.BytesIO()
+        image_p.save(img_byte_arr, format='PNG')
+        img_byte_arr.seek(0)
+    #img_byte_arr = img_byte_arr.getvalue()
+
+        return send_file(img_byte_arr, mimetype='image/png',attachment_filename='output.png',
+	                     as_attachment=True)
+
+
 @app.route('/download', methods = ['GET', 'POST'])
 def download():
 
-    # rendered = url_for('pdfgen')
     if request.method=="POST":
         medicine = request.form['medicine']
         # my_data = Data.query.get(id)
-        packet = io.BytesIO()
-    # create a new PDF with Reportlab
-        can = canvas.Canvas(packet, pagesize=letter)
-        can.drawString(10, 100, medicine)
-        can.save()
+        img = Image.open("WebApp/static/images/prescription.png")
+	#img = Image.open("/Users/shreyas_rl/Desktop/git/Flask-SqlAlchemy/Rheumatoid/WebApp/static/images/prescription.png")
 
-    #move to the beginning of the StringIO buffer
-        packet.seek(0)
-        new_pdf = PdfFileReader(packet)
-    # read your existing PDF
-        existing_pdf = PdfFileReader(open("WebApp/static/pdf/samplePrescription.pdf", "rb"))
-        output = PdfFileWriter()
-    # add the "watermark" (which is the new pdf) on the existing page
-        page = existing_pdf.getPage(0)
-        page.mergePage(new_pdf.getPage(0))
-        output.addPage(page)
-    # finally, write "output" to a real file
-        outputStream = open("WebApp/static/pdf/prescription.pdf", "wb")
-        output.write(outputStream)
-        outputStream.close()
+        img_p = pickle.dumps(img)
 
-    # pdf = pdfkit.from_string(rendered, False)
+# print(img_p)
 
-    # response = make_response(pdf)
-    # response.headers['Content-type'] = 'application/pdf'
-    # response.headers['Content-Disposition'] = 'inline; filename=prescription.pdf'
+        image_p = pickle.loads(img_p)
 
-    return render_template('download.html', prescription=1)
+        print(image_p)
 
+        img_byte_arr = io.BytesIO()
+        image_p.save(img_byte_arr, format='PNG')
+        img_byte_arr.seek(0)
+        #img_base64 = base64.b64encode(img_byte_arr.read())
+        img_base64 = base64.b64encode(img_byte_arr.getvalue()).decode("utf-8")
+		#return jsonify({'status':str(img_base64)})
 
-@app.route('/downloadPDF')
-def downloadPDF():
-	return send_file("static/pdf/prescription.pdf",
-	                     attachment_filename='patient.pdf',
-	                     as_attachment=True)
-#This route is for Download
-# @app.route('/pdfgen', methods = ['GET', 'POST'])
-# def pdfgen():
-    
-#     rendered = render_template('prescriptionPDF.html')
-#     pdf = pdfkit.from_string(rendered, False)
+        return render_template('download.html', prescription=1, presPNG = img_base64)
 
-#     response = make_response(pdf)
-#     response.headers['Content-type'] = 'application/pdf'
-#     response.headers['Content-Disposition'] = 'inline; filename=prescription.pdf'
+    else:
+    	
+    	return render_template('prescription.html')
 
-#     return response
-
-
-@app.route('/pdfdownload', methods = ['GET', 'POST'])
-def pdfdownload():
-    
-    rendered = render_template('prescriptionPDF.html')
-    pdf = pdfkit.from_string(rendered, False)
-
-    response = make_response(pdf)
-    response.headers['Content-type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=prescription.pdf'
-
-    return response
 
 
 @app.route('/test')
@@ -327,6 +317,28 @@ def test():
 	                     as_attachment=True)
 
 	#return render_template('prescriptionPDF.html')
+
+
+@app.route('/test2')
+def test2():
+    img = Image.open("WebApp/static/images/prescription.png")
+	#img = Image.open("/Users/shreyas_rl/Desktop/git/Flask-SqlAlchemy/Rheumatoid/WebApp/static/images/prescription.png")
+
+    img_p = pickle.dumps(img)
+
+# print(img_p)
+
+    image_p = pickle.loads(img_p)
+
+    print(image_p)
+
+    img_byte_arr = io.BytesIO()
+    image_p.save(img_byte_arr, format='PNG')
+    img_byte_arr.seek(0)
+    #img_byte_arr = img_byte_arr.getvalue()
+
+    return send_file(img_byte_arr, mimetype='image/png',attachment_filename='output.png',
+	                     as_attachment=True)
 
 @app.route('/savepatienttreatment/<id>/', methods = ['GET', 'POST'])
 def savepatienttreatment(id):

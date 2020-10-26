@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Data Masking {% endblock %}
+
+{% block nav %}
+<div class = "jumbotron p-3">
+<nav class="nav nav-pills nav-justified">
+  
+  <a class="nav-item nav-link active" href="/manageservices" active>HOME</a>
+  <a class="nav-item nav-link active" href="/logs" active>REFRESH</a>
+
+</nav>
+</div>
+{% endblock %}
+
+{% block body %} 
+
+<div class="container" >
+	<div class="row">
+		<div class="col md-12">
+			<div class="jumbotron p-3">
+				<h2><b> Logs </b>  </h2>
+
+
+				<table class="table table-hover table-dark ">
+					
+					<tr>
+						<th>LogID</th>
+						<th>Logs</th>
+					</tr>
+
+					{% if data %}
+					{% for row in data %}
+
+					<tr>
+						<td>{{row[0]}}</td>
+						<td>{{row[1]}}</td>
+						
+						
+					</tr>
+											
+								{% endfor %}
+								{% endif %}
+				</table>
+			</div>
+
+			
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

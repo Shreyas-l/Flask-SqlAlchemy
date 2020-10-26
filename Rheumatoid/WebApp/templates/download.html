@@ -31,7 +31,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active"> <img src="{{url_for('static',filename='images/home.png')}}" alt=""/> <a class="nav-link" href="/manageservices"> Home</a> </li>
+      <li class="nav-item active"> <img src="{{url_for('static',filename='images/home.png')}}" alt=""/> <a class="nav-link" href="/managepatients"> Home</a> </li>
       <li class="nav-item"> <img src="{{url_for('static',filename='images/settings.png')}}" alt=""/> <a class="nav-link" href="/settings">Settings</a> </li>
       <li class="nav-item"> <img src="{{url_for('static',filename='images/help.png')}}" alt=""/> <a class="nav-link" href="/help">Help</a> </li>
     </ul>
@@ -78,19 +78,30 @@
     <div class="row"> 
       <div class="row tab_box">
 
-        <a href="/downloadPDF" download><button class="s_btn" type="button">Download Prescription</button></a><br><br>
+        <a href="/downloadPDF" download><button class="s_btn" id="printf" type="button">Download Prescription</button></a><br><br>
 
         {% if prescription %}
 
         <!-- <embed type="text/html" src="{{prescription}}" width="100%" height="500"> -->
-        <iframe src="{{url_for('static',filename='pdf/prescription.pdf')}}" height="500" width="100%"></iframe>
+        <!-- <img src="data:image/jpeg;base64,{{ presPNG }}" alt="img_data"  id="imgslot"/> -->
+        <iframe src="" id="img" alt="Chart" height="500" width="100%"></iframe>
+
+        <script>
+            data = "{{presPNG}}"
+            data = data.replace("b&#39;", "") //to get rid of start curly brace code 
+            data = data.replace("&#39;", "")  //to get rid of end curly bracecode 
+
+            document.getElementById("img").src = "data:image/png;base64,"+data; // set src
+        </script>
+
+        <!-- <iframe src="{{presPNG}}" height="500" width="100%"></iframe> -->
 
         {% endif %}
         
 
 
         <table class="table table-bordered">
-          <thead>
+          <!-- <thead>
             <tr>
               <th>F ID</th>
               <th>Name</th>
@@ -100,7 +111,7 @@
               <th>Mask</th>
               <th>Unmask</th>
             </tr>
-          </thead>
+          </thead> -->
           <tbody>
             {% if selfils %}
           {% for filter in selfils %}
