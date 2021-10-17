@@ -4,7 +4,7 @@ Flask==1.1.2
 Flask-Mail==0.9.1
 Flask-SQLAlchemy==2.4.4
 itsdangerous==1.1.0
-Jinja2==2.11.2
+jinja2=2.11.3
 MarkupSafe==1.1.1
 pdfkit==0.6.1
 Pillow==8.0.1
